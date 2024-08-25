@@ -14,5 +14,5 @@ Start Pluto, and open `pluto/lewis-short.jl`
 ## From a Julia REPL
 
 
-
+!["REPL"](./lewis-short-repl.gif)
 
