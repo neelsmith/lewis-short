@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.42
+# v0.19.43
 
 using Markdown
 using InteractiveUtils
@@ -16,6 +16,7 @@ end
 
 # ╔═╡ 5bdbfc84-62d5-11ef-2bdc-e7186887eee4
 begin
+	using Downloads
 	using Markdown
 	using PlutoUI
 	using PlutoTeachingTools
@@ -40,8 +41,14 @@ This notebook searches a digital edition of Lewis and Short's *Latin Dictionary*
 # ╔═╡ c4d5efa7-0dc2-4a54-ac07-b71392d8360f
 Foldable("About the markdown lexicon",Markdown.parse(about))
 
+# ╔═╡ c9571b9f-8fd7-4145-a517-f562077b5292
+md"""*Use online copy of dictionary*: $(@bind remote CheckBox(true))"""
+
 # ╔═╡ 8befdede-ffe8-47c4-8676-3a8b1555c795
 md""" # Lewis-Short *Latin Dictionary*"""
+
+# ╔═╡ 7fcc2f71-2a60-4e46-a622-5d165e5a1732
+md"""*Contents to search*: $(@bind searchby Select(["lemma" => "Lemma", "id" => "Article ID", "fulltext" => "Full text"]))"""
 
 # ╔═╡ fb5cf0cf-edc1-4bda-bd35-9d45ea1bf746
 html"""
@@ -57,8 +64,24 @@ md""" > **Mechanics**"""
 # ╔═╡ 90d514a7-47e3-4c63-9cde-b73fedd44571
 f = "ls-articles.cex"
 
+# ╔═╡ 5ff94e1f-312c-49ea-b58c-bd85a6cdf69b
+"""Read contents of Lewis-Short dictionary."""
+function read_ls(remote = true)
+    if remote
+        url = "http://shot.holycross.edu/lexica/ls-articles.cex"
+        f = Downloads.download(url)
+        content = readlines(f)
+        rm(f)
+        content
+
+    else
+        f = "ls-articles.cex"
+        readlines(f)
+    end
+end
+
 # ╔═╡ 1d0ee8b4-ae47-45d3-9d15-f7c5d4504682
-articles = readlines(f)
+articles = read_ls(remote)
 
 # ╔═╡ 568c35b6-edb4-48dd-b808-08ead8a70127
 md"""*Search text of* **$(length(articles))** *articles in Lewis-Short for*: $(@bind s confirm(TextField(default = "|vocabulum")))"""
@@ -67,8 +90,15 @@ md"""*Search text of* **$(length(articles))** *articles in Lewis-Short for*: $(@
 """Find articles containing string `s` and format
 for markdown display.
 """
-function display(s, articles = articles)
-    matches = filter(article -> occursin(s,article), articles)
+function display(s; articles = articles, searchtype = "lemma")
+
+	pttrn = if searchtype == "id"
+		"|urn:cite2:hmt:ls.markdown:" * s * "|"
+	
+	else
+		s
+	end
+    matches = filter(article -> occursin(pttrn,article), articles)
     entries = map(matches) do entry
         cols = split(entry,"|")
         urn = cols[2]
@@ -85,11 +115,39 @@ end
 
 
 # ╔═╡ 9c286167-2bf2-4685-ac63-bb0328a8f0cf
-display(s) |> Markdown.parse
+display(s; searchtype = searchby) |> Markdown.parse
+
+# ╔═╡ 8b2448d3-37ab-40eb-bcc5-0666b289d757
+teststring = articles[2] #"seq|urn|key|entry"
+
+# ╔═╡ 018ca67b-7cc2-4f2b-a3a5-8432796e44c8
+urnrex = r"([^\|]+)\|([^\|]+)\|(.*)"
+
+# ╔═╡ 7a224c97-205a-495b-b76b-ca04d811bd1f
+urnre = Regex("([^\|]+)\|urn:cite2:hmt:ls.markdown:$s([^\|]+)(.+)" )
+
+# ╔═╡ 4946a152-6bf2-444c-a088-0ecedef0c7df
+match(urnre, teststring)
+
+# ╔═╡ 1db634f9-7a00-4542-88cc-f5fac48628ae
+filter(article -> occursin(urnre, article), articles)
+
+# ╔═╡ 70e054c6-3c3a-4960-8c11-e6279777572c
+replace(teststring, urnre => s"REPLACE -> \2")
+
+# ╔═╡ bf0390d1-2185-4429-892a-0e74959d1cd6
+r"urn:cite2:hmt:ls.markdown:[^|]"
+
+# ╔═╡ 45b6a815-98a0-4d1b-a2b9-e3e39027bf4f
+s
+
+# ╔═╡ 826fdc7b-7d03-46a7-a6d5-fcd570d24501
+articles
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
+Downloads = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 Markdown = "d6f4376e-aef5-505a-96c1-9c027394607a"
 PlutoTeachingTools = "661c6b06-c737-4d37-b85c-46df65de6f69"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
@@ -103,9 +161,9 @@ PlutoUI = "~0.7.59"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.10.1"
+julia_version = "1.10.4"
 manifest_format = "2.0"
-project_hash = "27b52003368a95e78ccd4139ec40eb55ea9b3ecd"
+project_hash = "f245ed35a56b279f277dc3b5b7db1cec6b7d99be"
 
 [[deps.AbstractPlutoDingetjes]]
 deps = ["Pkg"]
@@ -138,7 +196,7 @@ version = "0.11.5"
 [[deps.CompilerSupportLibraries_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "e66e0078-7015-5450-92f7-15fbd957f2ae"
-version = "1.1.0+0"
+version = "1.1.1+0"
 
 [[deps.Dates]]
 deps = ["Printf"]
@@ -458,11 +516,13 @@ version = "17.4.0+2"
 
 # ╔═╡ Cell order:
 # ╟─5bdbfc84-62d5-11ef-2bdc-e7186887eee4
-# ╠═305e51f3-9916-4459-a5b2-dfd9caffc969
-# ╠═f66639ba-4a59-4b6a-94c5-cfdd1a37e4dd
-# ╠═2d66a73c-8535-4023-a6a7-0d96cc2e78ec
+# ╟─305e51f3-9916-4459-a5b2-dfd9caffc969
+# ╟─f66639ba-4a59-4b6a-94c5-cfdd1a37e4dd
+# ╟─2d66a73c-8535-4023-a6a7-0d96cc2e78ec
 # ╟─c4d5efa7-0dc2-4a54-ac07-b71392d8360f
+# ╟─c9571b9f-8fd7-4145-a517-f562077b5292
 # ╟─8befdede-ffe8-47c4-8676-3a8b1555c795
+# ╟─7fcc2f71-2a60-4e46-a622-5d165e5a1732
 # ╟─568c35b6-edb4-48dd-b808-08ead8a70127
 # ╟─9c286167-2bf2-4685-ac63-bb0328a8f0cf
 # ╟─fb5cf0cf-edc1-4bda-bd35-9d45ea1bf746
@@ -470,5 +530,15 @@ version = "17.4.0+2"
 # ╟─90d514a7-47e3-4c63-9cde-b73fedd44571
 # ╟─1d0ee8b4-ae47-45d3-9d15-f7c5d4504682
 # ╟─f644526f-f62a-4a79-bced-ecbbd608205f
+# ╟─5ff94e1f-312c-49ea-b58c-bd85a6cdf69b
+# ╠═8b2448d3-37ab-40eb-bcc5-0666b289d757
+# ╠═018ca67b-7cc2-4f2b-a3a5-8432796e44c8
+# ╠═7a224c97-205a-495b-b76b-ca04d811bd1f
+# ╠═4946a152-6bf2-444c-a088-0ecedef0c7df
+# ╠═1db634f9-7a00-4542-88cc-f5fac48628ae
+# ╠═70e054c6-3c3a-4960-8c11-e6279777572c
+# ╠═bf0390d1-2185-4429-892a-0e74959d1cd6
+# ╠═45b6a815-98a0-4d1b-a2b9-e3e39027bf4f
+# ╠═826fdc7b-7d03-46a7-a6d5-fcd570d24501
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
