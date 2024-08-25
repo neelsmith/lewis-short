@@ -2,14 +2,14 @@
 
 Interactively search and read content of Lewis and Short's *Latin Dictionary* using Julia.
 
-Prerequisites: [the Julia language](https://julialang.org/downloads/).
+> Prerequisites: [the Julia language](https://julialang.org/downloads/).
 
 
 ## Using a Pluto notebook
 
-Prerequisites: install Pluto.
+Prerequisites: add the Pluto package.  (E.g., at the Julia REPL, `] add Pluto`.)
 
-Start Pluto, and open `pluto/lewis-short.jl`
+!["Pluto notebook"](./lewis-short-plutonb.gif)
 
 ## From a Julia REPL
 
