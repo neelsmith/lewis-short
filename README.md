@@ -52,7 +52,7 @@ julia> text("hedgehog") |> Markdown.parse
 > That's right: *passages of Cicero are cited in 23% of all articles in Lewis-Short*! (11837 / 51597)
 
 
-!["REPL"](./lewis-short-repl.gif)
+!["REPL"](./lewis-short-repl-1.1.gif)
 
 
 ## About the dictionary
