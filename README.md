@@ -9,9 +9,47 @@ Interactively search and read content of Lewis and Short's *Latin Dictionary* us
 
 Prerequisites: add the Pluto package.  (E.g., at the Julia REPL, `] add Pluto`.)
 
+- choose a search type (lemma, article ID, full text)
+- submit a search term
+- optionally, download the collection of articles and uncheck *Use online copy of dictionary* to work offline
+
 !["Pluto notebook"](./lewis-short-plutonb.gif)
 
 ## From a Julia REPL
+
+At a Julia REPL:
+
+```{julia}
+julia> include("reader.jl")
+```
+
+Read an article identified by ID:
+
+
+```{julia}
+julia> id("n15097") |> Markdown.parse
+```
+
+Read articles with lemmas matching a string:
+
+```{julia}
+julia> lemma("echinus") |> Markdown.parse
+```
+
+Read articles with any text matching a string:
+
+```{julia}
+julia> text("hedgehog") |> Markdown.parse
+```
+
+> **Tip**: if you just want to see how many articles match a term, use any of the above functions without `Markdown.parse`.  Example:
+>
+> ```{julia}
+> julia> text("Cic.")
+> "# 11837 articles matching *Cic.*\n\n## *A1*\n\n`urn:cite2:hmt:ls.markdown:n0`\n\nA, a, indecl. n. (sometimes joined with `I` *littera*), the first letter of the Latin alphabet, corresponding to the a, α of the other Indo-. European languages: A primum est: hinc incipiam, et" ⋯ 19753529 bytes ⋯ ".2` Zōpŭriātim, adv., *in the manner of Zopyrus*, Lucil. ap. Non. p. 455, 17. \n\n## *Zoster2*\n\n`urn:cite2:hmt:ls.markdown:n51584`\n\nZoster, ēris, m., `I` *a promontory*, *town*, *and harbor of Attica;* the promontory is now called *C. Lombarda*, Cic. Att. 5, 12 *init.*
+> ```
+>
+> That's right: *passages of Cicero are cited in 23% of all articles in Lewis-Short*! (11837 / 51597)
 
 
 !["REPL"](./lewis-short-repl.gif)
