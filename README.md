@@ -11,6 +11,7 @@ Prerequisites: add the Pluto package.  (E.g., at the Julia REPL, `] add Pluto`.)
 
 - choose a search type (lemma, article ID, full text)
 - submit a search term
+- if searching by lemma, optionally limit search to matching beginning of lemma
 - optionally, download the collection of articles and uncheck *Use online copy of dictionary* to work offline
 
 !["Pluto notebook"](./lewis-short-plutonb.gif)
