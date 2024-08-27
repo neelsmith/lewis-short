@@ -36,7 +36,7 @@ Read articles with lemmas matching a string:
 ```{julia}
 julia> lemma("echinus") |> Markdown.parse
 ```
-> **Tip**: you can limit matches to lemmas beginning with the search string with an optional `initial` argument.
+> **Tip**: add an optional `initial` argument to limit matches to lemmas beginning with the search string.
 >
 > ```{julia}
 > julia> lemma("vocabulum")
