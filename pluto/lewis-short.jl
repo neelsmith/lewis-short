@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.43
+# v0.19.46
 
 using Markdown
 using InteractiveUtils
@@ -20,7 +20,7 @@ begin
 	using Markdown
 	using PlutoUI
 	using PlutoTeachingTools
-	nbversion = "1.0.0"
+	nbversion = "1.1.0"
 	md"""*Notebook version*: **$(nbversion)**. *See version info*: $(@bind versioninfo CheckBox())"""
 end
 
@@ -28,6 +28,7 @@ end
 if versioninfo
 md"""
 
+- **1.1.0**: adds option to limit search by lemma to initial string match
 - **1.0.0**: initial release
 """
 end
@@ -40,6 +41,14 @@ md""" # Lewis-Short *Latin Dictionary*"""
 
 # ╔═╡ 7fcc2f71-2a60-4e46-a622-5d165e5a1732
 md"""*Contents to search*: $(@bind searchby Select(["lemma" => "Lemma", "id" => "Article ID", "fulltext" => "Full text"]))"""
+
+# ╔═╡ b0fb6dad-ad4a-4b66-957f-d2cee7bbaaff
+if searchby == "lemma"
+	md"""*Limit to matching beginning of lemma* $(@bind initial CheckBox())"""
+else 
+	initial = false
+	nothing
+end
 
 # ╔═╡ fb5cf0cf-edc1-4bda-bd35-9d45ea1bf746
 html"""
@@ -114,11 +123,12 @@ end
 """Find articles containing string `s` and format
 for markdown display.
 """
-function display(s; articles = articles, searchtype = "lemma")
+function display(s; articles = articles, searchtype = "lemma", initial = false)
 	pttrn = if searchtype == "id"
 		"urn:cite2:hmt:ls.markdown:" * s * "\\|"
 	elseif searchtype == "lemma"
-		lemmasearchre = "$(s).*\\|.+"
+		initial ? "[^\\|]+\\|[^\\|]+\\|$(s).*\\|.+" : "[^\\|]+\\|[^\\|]+\\|[^\\|]*$(s).*\\|.+"
+		#lemmasearchre = initial ? "\\|$(s).*\\|.+" : "$(s).*\\|.+"
 	else
 		s
 	end
@@ -153,7 +163,7 @@ end
 
 
 # ╔═╡ 9c286167-2bf2-4685-ac63-bb0328a8f0cf
-display(s; searchtype = searchby) |> Markdown.parse
+display(s; searchtype = searchby, initial = initial) |> Markdown.parse
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -172,7 +182,7 @@ PlutoUI = "~0.7.59"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.10.4"
+julia_version = "1.10.1"
 manifest_format = "2.0"
 project_hash = "f245ed35a56b279f277dc3b5b7db1cec6b7d99be"
 
@@ -207,7 +217,7 @@ version = "0.11.5"
 [[deps.CompilerSupportLibraries_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "e66e0078-7015-5450-92f7-15fbd957f2ae"
-version = "1.1.1+0"
+version = "1.1.0+0"
 
 [[deps.Dates]]
 deps = ["Printf"]
@@ -532,6 +542,7 @@ version = "17.4.0+2"
 # ╟─c9571b9f-8fd7-4145-a517-f562077b5292
 # ╟─8befdede-ffe8-47c4-8676-3a8b1555c795
 # ╟─7fcc2f71-2a60-4e46-a622-5d165e5a1732
+# ╟─b0fb6dad-ad4a-4b66-957f-d2cee7bbaaff
 # ╟─568c35b6-edb4-48dd-b808-08ead8a70127
 # ╟─9c286167-2bf2-4685-ac63-bb0328a8f0cf
 # ╟─fb5cf0cf-edc1-4bda-bd35-9d45ea1bf746

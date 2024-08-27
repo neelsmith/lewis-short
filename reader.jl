@@ -1,7 +1,7 @@
 using Markdown
 using Downloads
 
-scriptversion = "1.1.0"
+scriptversion = "1.2.0"
 
 """Sort articles following the Blackwell algorithm: exact lemma match comes out on top, then lemma substrings alphabetically sorted, then remaining articles in alphabetical order."""
 function blackwell_sort(matches, lemmastring)
@@ -62,8 +62,9 @@ function id(s; articles = articles)
     string(hdr, formatted)
 end
 
-function lemma(s; articles = articles)
-    pttrn = "$(s).*\\|.+"
+function lemma(s; articles = articles, initial = false)
+    #pttrn =  initial ? "\\|$(s).*\\|.+" : "$(s).*\\|.+"
+    pttrn =  initial ? "[^\\|]+\\|[^\\|]+\\|$(s).*\\|.+" : "[^\\|]+\\|[^\\|]+\\|[^\\|]*$(s).*\\|.+"
     re = Regex(pttrn)
     matches = filter(article -> occursin(re,article), articles)
     formatted = blackwell_sort(matches, s) |> format
@@ -76,6 +77,7 @@ function versioninfo()
 """
 ## Version history:
 
+- 1.2.0: add option to restrict lemma search to beginning of lemma
 - 1.1.0: break out distinct functions for lemma, id and text
 - 1.0.0: initial release
 """

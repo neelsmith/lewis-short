@@ -35,6 +35,15 @@ Read articles with lemmas matching a string:
 ```{julia}
 julia> lemma("echinus") |> Markdown.parse
 ```
+> **Tip**: you can limit matches to lemmas beginning with the search string with an optional `initial` argument.
+>
+> ```{julia}
+> julia> lemma("vocabulum")
+> "# 2 articles with lemma matching *vocabulum*\n\n## *vocabulum*\n\n`urn:cite2:hmt:ls.markdown:n51245`\n\nvŏcābŭlum, i, n. id., `I` *an appellation*, *designation*, *name* of any thing (cf.: nomen, vox). `I` In gen.: philosophorum habent disciplinae ex ipsis Vocabula, Ter. Eun. 2, 2, " ⋯ 1373 bytes ⋯ "et equus, et legit et currit, Varr. L. L. 8, §§ 11, 12, 45, 52 sq., 80 Müll; Quint. 1, 4, 20; Sen. Ep. 58, 6. \n\n## *provocabulum*\n\n`urn:cite2:hmt:ls.markdown:n39221`\n\nprō-vŏcābŭlum, i, n., `I` *a word that is used for another*, *a pronoun*, Auct. ap. Varr. L. L. 8, § 45 Müll. "
+>
+> julia> lemma("vocabulum"; initial = true)
+> "# 1 article with lemma matching *vocabulum*\n\n## *vocabulum*\n\n`urn:cite2:hmt:ls.markdown:n51245`\n\nvŏcābŭlum, i, n. id., `I` *an appellation*, *designation*, *name* of any thing (cf.: nomen, vox). `I` In gen.: philosophorum habent disciplinae ex ipsis Vocabula, Ter. Eun. 2, 2, 3" ⋯ 1205 bytes ⋯ "llative noun in partic. (in contradistinction to nomen, as denoting a proper name; v. nomen): Aristoteles orationis duas partes esse dicit, vocabula et verba, ut homo et equus, et legit et currit, Varr. L. L. 8, §§ 11, 12, 45, 52 sq., 80 Müll; Quint. 1, 4, 20; Sen. Ep. 58, 6. "
+> ```
 
 Read articles with any text matching a string:
 
