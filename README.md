@@ -7,7 +7,7 @@ Interactively search and read content of Lewis and Short's *Latin Dictionary* us
 
 ## Using a Pluto notebook
 
-Prerequisites: add the Pluto package.  (E.g., at the Julia REPL, `] add Pluto`.)
+Prerequisites: add the Pluto package.  (E.g., from a Julia REPL, `] add Pluto`.)
 
 - choose a search type (lemma, article ID, full text)
 - submit a search term
