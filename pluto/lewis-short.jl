@@ -20,7 +20,7 @@ begin
 	using Markdown
 	using PlutoUI
 	using PlutoTeachingTools
-	nbversion = "1.1.0"
+	nbversion = "1.2.0"
 	md"""*Notebook version*: **$(nbversion)**. *See version info*: $(@bind versioninfo CheckBox())"""
 end
 
@@ -28,6 +28,7 @@ end
 if versioninfo
 md"""
 
+- **1.2.0**: adds option to count rather than display results
 - **1.1.0**: adds option to limit search by lemma to initial string match
 - **1.0.0**: initial release
 """
@@ -40,7 +41,7 @@ md"""*Use online copy of dictionary*: $(@bind remote CheckBox(true))"""
 md""" # Lewis-Short *Latin Dictionary*"""
 
 # ╔═╡ 7fcc2f71-2a60-4e46-a622-5d165e5a1732
-md"""*Contents to search*: $(@bind searchby Select(["lemma" => "Lemma", "id" => "Article ID", "fulltext" => "Full text"]))"""
+md"""*Contents to search*: $(@bind searchby Select(["lemma" => "Lemma", "id" => "Article ID", "fulltext" => "Full text"]))  *Show summary count only*: $(@bind countonly CheckBox())"""
 
 # ╔═╡ b0fb6dad-ad4a-4b66-957f-d2cee7bbaaff
 if searchby == "lemma"
@@ -123,7 +124,7 @@ end
 """Find articles containing string `s` and format
 for markdown display.
 """
-function display(s; articles = articles, searchtype = "lemma", initial = false)
+function display(s; articles = articles, searchtype = "lemma", initial = false, count = false)
 	pttrn = if searchtype == "id"
 		"urn:cite2:hmt:ls.markdown:" * s * "\\|"
 	elseif searchtype == "lemma"
@@ -134,18 +135,6 @@ function display(s; articles = articles, searchtype = "lemma", initial = false)
 	end
 	re = Regex(pttrn)
     matches = filter(article -> occursin(re,article), articles)
-	
-	sorted = blackwell_sort(matches, s)
-
-	
-    entries = map(sorted) do entry
-        cols = split(entry,"|")
-        urn = cols[2]
-        lemma = cols[3]
-        text = cols[4]
-        string("## *", lemma, "*\n\n`", urn,"`\n\n", text)
-    end
-	
 
     article = length(matches) == 1 ? "article" : "articles"
     hdr =  if searchtype == "id"
@@ -156,14 +145,33 @@ function display(s; articles = articles, searchtype = "lemma", initial = false)
 		"""# $(length(matches)) $(article) matching *$(s)*\n\n""" 
 		
 	end
-    string(hdr, join(entries,"\n\n"))
+
+	if count
+		hdr
+	else
+	
+		sorted = blackwell_sort(matches, s)
+	
+		
+	    entries = map(sorted) do entry
+	        cols = split(entry,"|")
+	        urn = cols[2]
+	        lemma = cols[3]
+	        text = cols[4]
+	        string("## *", lemma, "*\n\n`", urn,"`\n\n", text)
+	    end
+		
+	
+	
+	    string(hdr, join(entries,"\n\n"))
+	end
 	
 end
 
 
 
 # ╔═╡ 9c286167-2bf2-4685-ac63-bb0328a8f0cf
-display(s; searchtype = searchby, initial = initial) |> Markdown.parse
+display(s; searchtype = searchby, initial = initial, count = countonly) |> Markdown.parse
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -182,7 +190,7 @@ PlutoUI = "~0.7.59"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.10.1"
+julia_version = "1.10.6"
 manifest_format = "2.0"
 project_hash = "f245ed35a56b279f277dc3b5b7db1cec6b7d99be"
 
@@ -217,7 +225,7 @@ version = "0.11.5"
 [[deps.CompilerSupportLibraries_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "e66e0078-7015-5450-92f7-15fbd957f2ae"
-version = "1.1.0+0"
+version = "1.1.1+0"
 
 [[deps.Dates]]
 deps = ["Printf"]
@@ -522,7 +530,7 @@ version = "1.2.13+1"
 [[deps.libblastrampoline_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "8e850b90-86db-534c-a0d3-1478176c7d93"
-version = "5.8.0+1"
+version = "5.11.0+0"
 
 [[deps.nghttp2_jll]]
 deps = ["Artifacts", "Libdl"]

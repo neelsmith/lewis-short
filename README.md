@@ -14,7 +14,7 @@ Prerequisites: add the Pluto package.  (E.g., from a Julia REPL, `] add Pluto`.)
 - if searching by lemma, optionally limit the search to matching the beginning of lemma
 - optionally, download the collection of articles and uncheck *Use online copy of dictionary* to work offline
 
-!["Pluto notebook"](./lewis-short-plutonb.gif)
+![Pluto notebook](./lewis-short-plutonb.gif)
 
 ## From a Julia REPL
 
@@ -62,12 +62,12 @@ julia> text("hedgehog") |> Markdown.parse
 > That's right: *passages of Cicero are cited in 23% of all articles in Lewis-Short*! (11837 / 51597)
 
 
-!["REPL"](./lewis-short-repl-1.1.gif)
+![Using the script from the Julia REPL](./lewis-short-repl-1.1.gif)
 
 
 ## About the dictionary
 
-The Julia script and Pluto notebook search articles extracted from a digital edition of Lewis and Short's *Latin Dictionary* in Markdown formatting by Christopher Blackwell, and [freely available on github](https://github.com/Eumaeus/cex_lewis_and_short).
+The Julia script and Pluto notebook in this repository search articles extracted from a digital edition of Lewis and Short's *Latin Dictionary* in Markdown formatting by Christopher Blackwell, and [freely available on github](https://github.com/Eumaeus/cex_lewis_and_short).
 
 The articles are in a simple delimited-text format with a sequence number, an identifying CITE2 URN, a lemma string, and the full article. 
 
@@ -75,7 +75,10 @@ The articles are in a simple delimited-text format with a sequence number, an id
 
 You can download the extracted articles [here](http://shot.holycross.edu/lexica/ls-articles.cex). If you download the delimited-text file articles, you can run the Julia scripts and Pluto notebook offline.
 
-To use the REPL scripts offline, assign the path to the delimited-text file to a variable named `lexiconfile`, then include the script.  For exmample, if you have downloaded the file to your current working directory:
+
+### Using the REPL with offline data
+
+To use the REPL scripts offline, assign the path to the delimited-text file to a variable named `lexiconfile`, then include the script.  For example, if you have downloaded the file to your current working directory:
 
 ```{julia}
 julia> lexiconfile = joinpath(pwd(), "ls-articles.cex")
@@ -100,6 +103,8 @@ julia> include("reader.jl")
 ```
 
 
-To use the Pluto notebook offline:
+### Using the Pluto notebook with offline data
 
-- unchecking the checkbox option labelled *Use online copy of dictionary*.
+
+1. Put the downloaded delimited-text file in the root directory of this repository .
+2. In the Pluto notebook, uncheck the option labelled *Use online copy of dictionary*
