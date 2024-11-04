@@ -1,7 +1,29 @@
 using Markdown
 using Downloads
 
-scriptversion = "1.2.0"
+scriptversion = "1.3.0"
+
+function versioninfo()
+    """
+    ## Version history:
+    
+    - 1.3.0: add mechanism to use local file for dictionary without having to modify script
+    - 1.2.0: add option to restrict lemma search to beginning of lemma
+    - 1.1.0: break out distinct functions for lemma, id and text
+    - 1.0.0: initial release
+    """
+end
+
+function howto()
+    @info("\nUse one of these functions to view formatted articles in your REPL.")
+    @info("\nFind article by ID:")
+    @info("    id(IDVALUE) |> Markdown.parse\n")
+    @info("\nFind matching lemma:")
+    @info("    lemma(STRING) |> Markdown.parse\n")
+    @info("\nFull-text search:")
+    @info("    text(STRING) |> Markdown.parse\n")
+end
+
 
 """Sort articles following the Blackwell algorithm: exact lemma match comes out on top, then lemma substrings alphabetically sorted, then remaining articles in alphabetical order."""
 function blackwell_sort(matches, lemmastring)
@@ -32,9 +54,9 @@ function format(entries)
 end
 
 
-"""Read Lewis-Short articles."""
-function read_ls(f = "ls-articles.ex"; remote = true)
-    if remote
+"""Read Lewis-Short article from delimited-text source."""
+function read_ls(f = nothing)
+    if isnothing(f)
         url = "http://shot.holycross.edu/lexica/ls-articles.cex"
         f = Downloads.download(url)
         content = readlines(f)
@@ -47,12 +69,16 @@ function read_ls(f = "ls-articles.ex"; remote = true)
 end
 
 """Search a list of articles for text matching a string."""
-function text(s; articles = articles)
+function text(s; articles = articles, count = false)
     matches = filter(article -> occursin(s,article), articles)
-    formatted = blackwell_sort(matches, s) |> format
-    article = length(matches) == 1 ? "article" : "articles"
-    hdr = """# $(length(matches)) $(article) matching *$(s)*\n\n""" 
-    string(hdr, formatted)
+    if count
+        length(matches)
+    else
+        formatted = blackwell_sort(matches, s) |> format
+        article = length(matches) == 1 ? "article" : "articles"
+        hdr = """# $(length(matches)) $(article) matching *$(s)*\n\n""" 
+        string(hdr, formatted)
+    end
 end
 
 """Search a list of articles for identifying ID matching a string."""
@@ -69,44 +95,43 @@ end
 """Search a list of articles for lemma matching a string,
 optionally limiting search to matching the beginning of the lemma.
 """
-function lemma(s; articles = articles, initial = false)
+function lemma(s; articles = articles, initial = false, count = false)
     pttrn =  initial ? "[^\\|]+\\|[^\\|]+\\|$(s).*\\|.+" : "[^\\|]+\\|[^\\|]+\\|[^\\|]*$(s).*\\|.+"
     re = Regex(pttrn)
     matches = filter(article -> occursin(re,article), articles)
-    formatted = blackwell_sort(matches, s) |> format
-    article = length(matches) == 1 ? "article" : "articles"
-    hdr = """# $(length(matches)) $(article) with lemma matching *$(s)*\n\n""" 
-    string(hdr, formatted)
+    if count
+        length(matches)
+    else
+        formatted = blackwell_sort(matches, s) |> format
+        article = length(matches) == 1 ? "article" : "articles"
+        hdr = """# $(length(matches)) $(article) with lemma matching *$(s)*\n\n""" 
+        string(hdr, formatted)
+    end
 end
 
-function versioninfo()
-"""
-## Version history:
 
-- 1.2.0: add option to restrict lemma search to beginning of lemma
-- 1.1.0: break out distinct functions for lemma, id and text
-- 1.0.0: initial release
-"""
-end
-
+# Execute this when script is included:
 @info("Script version: $(scriptversion)")
 @info("To see version info:")
-@info("   versioninfo() |> Markdown.parse\n")
-@info("Downloading Lewis-Short dictionary...")
-try
-    global articles = read_ls()
-    @info("Complete.")
-catch
-    @warn("\nCouldn't download dictionary data.")
-    @info("\nIf you have a local copy, you can use it by running:")
-    @info("    articles = read_ls(remote = false)\n")
+@info("   versioninfo() |> Markdown.parse\n\n")
+
+if @isdefined(lexiconfile) && ! isnothing(lexiconfile)
+    @info("Using source file $(lexiconfile) for lexicon")
+    global articles = read_ls(lexiconfile)
+    howto()
+else
+    @info("Downloading Lewis-Short dictionary...")
+    try
+        global articles = read_ls()
+        @info("Download complete.")
+        howto()
+    catch
+        @warn("\nCouldn't download dictionary data.")
+        @info("\nIf you have a local copy, you can use it by running:")
+        @info("    articles = read_ls(remote = false)\n")
+        
+    end
 end
-@info("\nUse one of these to view formatted articles in your REPL.")
-@info("\nFind article by ID:")
-@info("    id(IDVALUE) |> Markdown.parse\n")
-@info("\nFind matching lemma:")
-@info("    lemma(STRING) |> Markdown.parse\n")
-@info("\nFull-text search:")
-@info("    text(STRING) |> Markdown.parse\n")
+
 
 

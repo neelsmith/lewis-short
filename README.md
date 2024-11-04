@@ -73,19 +73,29 @@ The articles are in a simple delimited-text format with a sequence number, an id
 
 ## Working offline
 
-You can download the extracted articles [here](http://shot.holycross.edu/lexica/ls-articles.cex). If you download the articles into the root directory of this repository, you can run the Julia scripts and Pluto notebook offline.
+You can download the extracted articles [here](http://shot.holycross.edu/lexica/ls-articles.cex). If you download the delimited-text file articles, you can run the Julia scripts and Pluto notebook offline.
 
-To use the REPL scripts offline:
+To use the REPL scripts offline, assign the path to the delimited-text file to a variable named `lexiconfile`, then include the script.  For exmample, if you have downloaded the file to your current working directory:
 
 ```{julia}
+julia> lexiconfile = joinpath(pwd(), "ls-articles.cex")
 julia> include("reader.jl")
-[ Info: Downloading Lewis-Short dictionary...
-[ Info: Complete.
+[ Info: Script version: 1.3.0
+[ Info: To see version info:
+┌ Info:    versioninfo() |> Markdown.parse
+└ 
+[ Info: Using source file /.../ls-articles.cex for lexicon
 ┌ Info: 
-└ To view formatted articles in your REPL:
-[ Info:     display(TERM) |> Markdown.parse
-
-julia> articles = read_ls(remote = false)
+└ Use one of these functions to view formatted articles in your REPL.
+┌ Info: 
+└ Find article by ID:
+[ Info:     id(IDVALUE) |> Markdown.parse
+┌ Info: 
+└ Find matching lemma:
+[ Info:     lemma(STRING) |> Markdown.parse
+┌ Info: 
+└ Full-text search:
+[ Info:     text(STRING) |> Markdown.parse
 
 ```
 
