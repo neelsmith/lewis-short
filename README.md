@@ -9,10 +9,13 @@ Interactively search and read content of Lewis and Short's *Latin Dictionary* us
 
 Prerequisites: add the Pluto package.  (E.g., from a Julia REPL, `] add Pluto`.)
 
+In a running Pluto session, open `pluto/lewis-short.jl`.
+
 - choose a search type (lemma, article ID, full text)
 - submit a search term
 - if searching by lemma, optionally limit the search to matching the beginning of lemma
-- optionally, download the collection of articles and uncheck *Use online copy of dictionary* to work offline
+
+You may optionally download the collection of articles and uncheck *Use online copy of dictionary* to work offline.
 
 ![Pluto notebook](./lewis-short-plutonb.gif)
 
