@@ -5,7 +5,7 @@ Interactively search and read content of Lewis and Short's *Latin Dictionary* us
 > Prerequisites: [the Julia language](https://julialang.org/downloads/).
 
 
-## Using a Pluto notebook
+## Using a Pluto notebook (current version: 1.2.0)
 
 Prerequisites: add the Pluto package.  (E.g., from a Julia REPL, `] add Pluto`.)
 
@@ -16,7 +16,7 @@ Prerequisites: add the Pluto package.  (E.g., from a Julia REPL, `] add Pluto`.)
 
 ![Pluto notebook](./lewis-short-plutonb.gif)
 
-## From a Julia REPL
+## From a Julia REPL (current version of script: 1.3.0)
 
 At a Julia REPL:
 
