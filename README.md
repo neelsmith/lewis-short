@@ -52,13 +52,15 @@ Read articles with any text matching a string:
 julia> text("hedgehog") |> Markdown.parse
 ```
 
-> **Tip**: if you just want to see how many articles match a term, use any of the above functions without `Markdown.parse`.  Example:
+> **Tip**: if you just want to see how many articles match a term, set an optional parameter `count` to true.  If you want to see how many articles are in the Lewis-Short dataset, just look at the length of the `articles` vector. Example:
 >
 > ```{julia}
-> julia> text("Cic.")
-> "# 11837 articles matching *Cic.*\n\n## *A1*\n\n`urn:cite2:hmt:ls.markdown:n0`\n\nA, a, indecl. n. (sometimes joined with `I` *littera*), the first letter of the Latin alphabet, corresponding to the a, α of the other Indo-. European languages: A primum est: hinc incipiam, et" ⋯ 19753529 bytes ⋯ ".2` Zōpŭriātim, adv., *in the manner of Zopyrus*, Lucil. ap. Non. p. 455, 17. \n\n## *Zoster2*\n\n`urn:cite2:hmt:ls.markdown:n51584`\n\nZoster, ēris, m., `I` *a promontory*, *town*, *and harbor of Attica;* the promontory is now called *C. Lombarda*, Cic. Att. 5, 12 *init.*
-> ```
->
+> julia> text("Cic."; count = true)
+> 11837
+> julia> length(articles)
+>51597
+>```
+> 
 > That's right: *passages of Cicero are cited in 23% of all articles in Lewis-Short*! (11837 / 51597)
 
 
