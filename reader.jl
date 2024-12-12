@@ -1,13 +1,14 @@
 using Markdown
 using Downloads
 
-scriptversion = "1.3.0"
+scriptversion = "1.3.1"
 
 function versioninfo()
     """
     ## Version history:
     
-    - 1.3.0: add mechanism to use local file for dictionary without having to modify script
+    - 1.3.1: corrects an error in usage instructions.
+    - 1.3.0: add mechanism to use local file for dictionary without having to modify script; options in both REPL script and Pluto notebook for counting results rather than formatting the full text of matching articles in Markdown.
     - 1.2.0: add option to restrict lemma search to beginning of lemma
     - 1.1.0: break out distinct functions for lemma, id and text
     - 1.0.0: initial release
@@ -130,8 +131,7 @@ else
     catch
         @warn("\nCouldn't download dictionary data.")
         @info("\nIf you have a local copy, you can use it by running:")
-        @info("    articles = read_ls(remote = false)\n")
-        
+        @info("    articles = read_ls(FILE)\n")
     end
 end
 
