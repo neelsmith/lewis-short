@@ -98,14 +98,20 @@ end
 """Search a list of articles for lemma matching a string,
 optionally limiting search to matching the beginning of the lemma.
 """
-function lemma(s; articles = articles, initial = false, count = false)
+function lemma(s; articles = articles, initial = false, count = false, limit = 0)
     pttrn =  initial ? "[^\\|]+\\|[^\\|]+\\|$(s).*\\|.+" : "[^\\|]+\\|[^\\|]+\\|[^\\|]*$(s).*\\|.+"
     re = Regex(pttrn)
     matches = filter(article -> occursin(re,article), articles)
     if count
         length(matches)
     else
-        formatted = blackwell_sort(matches, s) |> format
+        max = if limit > 0
+            min(length(matches), limit)
+        else
+            length(matches)
+        end
+
+        formatted = blackwell_sort(matches[1:max], s) |> format
         article = length(matches) == 1 ? "article" : "articles"
         hdr = """# $(length(matches)) $(article) with lemma matching *$(s)*\n\n""" 
         string(hdr, formatted)
