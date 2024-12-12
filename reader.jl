@@ -22,6 +22,8 @@ function howto()
     @info("    lemma(STRING) |> Markdown.parse\n")
     @info("\nFull-text search:")
     @info("    text(STRING) |> Markdown.parse\n")
+    @info("\n\nTo see these instructions again:\n")
+    @info("    howto()")
 end
 
 
